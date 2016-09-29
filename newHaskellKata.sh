@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # newHaskellKata.sh
 # Usage: newHaskellKata.sh NameOfTheNewHaskellKata
 
@@ -9,14 +9,20 @@
 KATAROOT="$HOME/git/GITHUB"
 KATABASE="Bowling"
 
-echo "The $KATA_U kata is being prepared."
 KATA_U=`eval "echo ${1} | sed 's/^./\u&/'"`  # NameOfTheNewKata. First letter to uppercase
 KATA_L=`eval "echo ${1} | sed 's/^./\l&/'"`  # NameOfTheNewKata. First letter to lowercase
 KATABASE_U=`eval "echo $KATABASE | sed 's/^./\u&/'"`  # NameOfTheBaseKata. First letter to uppercase
 KATABASE_L=`eval "echo $KATABASE | sed 's/^./\l&/'"`  # NameOfTheBaseKata. First letter to lowercase
 
+function check()
+{
+if [ -z "$KATA_U" ]           ; then echo "usage: $0 NameOfTheNewHaskellKata" ; echo   ; exit 1; fi
+if [ -d "$KATAROOT/$KATA_U" ] ; then echo "New Haskell Kata '$KATA_U' already exists." ; exit 1; fi
+}
+
 function doit()
 {
+echo "The $KATA_U kata is being prepared."
 mkdir "$KATA_U"
 cp -R \
   $KATABASE_U/.cabal-sandbox/  \
@@ -43,5 +49,6 @@ cabal sandbox init
 cabal configure --enable-tests
 }
 
+check
 cd $KATAROOT
 doit
