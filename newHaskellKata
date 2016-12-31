@@ -1,0 +1,84 @@
+#!/bin/bash -e
+# newHaskellKata.sh
+# Usage: newHaskellKata.sh NameOfTheNewHaskellKata
+
+# Aim: To start a new Haskell kata in few seconds using an old one.
+#      The kata will be placed next to the other katas in its own directory.
+
+# Please, set up the next two variables:
+KATAROOT="$HOME/git/GITHUB"
+KATABASE="VoteTemplate"
+
+KATA_U=`eval "echo ${1} | sed 's/^./\u&/'"`  # NameOfTheNewKata. First letter to uppercase
+KATA_L=`eval "echo ${1} | sed 's/^./\l&/'"`  # NameOfTheNewKata. First letter to lowercase
+KATABASE_U=`eval "echo $KATABASE | sed 's/^./\u&/'"`  # NameOfTheBaseKata. First letter to uppercase
+KATABASE_L=`eval "echo $KATABASE | sed 's/^./\l&/'"`  # NameOfTheBaseKata. First letter to lowercase
+
+function check()
+{
+if [ -z "$KATA_U" ]           ; then echo "usage: $0 NameOfTheNewHaskellKata" ; echo   ; exit 1; fi
+if [ -d "$KATAROOT/$KATA_U" ] ; then echo "New Haskell Kata '$KATA_U' already exists." ; exit 1; fi
+}
+
+function doit()
+{
+# Copy and update files:
+echo -e "\033[1m$KATA_U\033[0m kata is being prepared."
+echo -e "\033[1mTDD metodology\033[0m is your friend (\033[1mRed-Green\033[0m)."
+echo "https://en.wikipedia.org/wiki/Test-driven_development"
+mkdir "$KATA_U"
+cp -R \
+  $KATABASE_U/.cabal-sandbox/  \
+  $KATABASE_U/src/ \
+  $KATABASE_U/test/ \
+  $KATABASE_U/$KATABASE_U.cabal \
+  $KATABASE_U/.gitignore \
+       "$KATA_U"
+
+cd "$KATA_U"
+
+mv $KATABASE_U.cabal "$KATA_U".cabal
+mv src/$KATABASE_U.hs src/"$KATA_U".hs
+
+sed -i "s/$KATABASE_U/$KATA_U/g" "$KATA_U".cabal
+
+sed -i "s/$KATABASE_U/$KATA_U/g" src/"$KATA_U".hs
+sed -i "s/$KATABASE_U/$KATA_U/g" test/Tests.hs
+
+sed -i "s/$KATABASE_L/$KATA_L/g" src/"$KATA_U".hs
+sed -i "s/$KATABASE_L/$KATA_L/g" test/Tests.hs
+
+cabal sandbox init
+cabal configure --enable-tests
+
+# cdargs:
+sed -i "1i $KATA_U $KATAROOT/$KATA_U" ~/.cdargs
+
+# git:
+git init
+git add                \
+      .gitignore       \
+      "$KATA_U".cabal  \
+      src/             \
+      test/
+
+# Some help:
+echo
+echo -e "\033[1mgit\033[0m is particulary taking care of:"
+echo -e "    $KATAROOT/$KATA_U\033[1m/src/$KATA_U.hs\033[0m"
+echo -e "    $KATAROOT/$KATA_U\033[1m/test/Tests.hs\033[0m"
+echo
+echo "When you edit this code for the first time your aim is to go 'Red', and then:"
+echo
+echo -e '\033[1mgit commit -am "First Red"\033[0m'
+echo
+echo -e "\033[4mShortcuts\033[0m:"
+echo -e "\033[1mcdb\033[0m   (hit 'Enter' twice)   # to go to the kata directory i.e.:"
+echo -e "    cd $KATAROOT/$KATA_U"
+echo -e "\033[1mrg\033[0m    # Compile, and if success, run tests    (\033[1mr\033[0med-\033[1mg\033[0mreen) i.e.:"
+echo -e "    cabal build && dist/build/test/test"
+}
+
+check
+cd $KATAROOT
+doit
