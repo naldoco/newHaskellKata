@@ -70,13 +70,29 @@ echo -e "    $KATAROOT/$KATA_U\033[1m/test/Tests.hs\033[0m"
 echo
 echo "When you edit this code for the first time your aim is to go 'Red', and then:"
 echo
-echo -e '\033[1mgit commit -am "First Red"\033[0m'
+echo -e "\033[1memacs\033[0m  $KATAROOT/$KATA_U\033[1m/src/$KATA_U.hs\033[0m  $KATAROOT/$KATA_U\033[1m/test/Tests.hs &\033[0m"
+echo " ...work, work, work,..."
+echo -e "\033[1mgit commit -am "\""First Red"\""\033[0m"
 echo
 echo -e "\033[4mShortcuts\033[0m:"
-echo -e "\033[1mcdb\033[0m   (hit 'Enter' twice)   # to go to the kata directory i.e.:"
+echo -e "\033[1mcdb\033[0m   # (hit 'Enter' twice)   to go to the kata directory i.e.:"
 echo -e "    cd $KATAROOT/$KATA_U"
 echo -e "\033[1mrg\033[0m    # Compile, and if success, run tests    (\033[1mr\033[0med-\033[1mg\033[0mreen) i.e.:"
 echo -e "    cabal build && dist/build/test/test"
+
+# README.md    (Github)
+echo "# vote"                                                                     > "$KATAROOT/$KATA_U/dist/README.md"
+echo "Kata: $KATA_L (TDD Style) - Graham Hutton's "\""Programming in Haskell 2nd Ed.\"" >> "$KATAROOT/$KATA_U/dist/README.md"
+echo                                                    >> "$KATAROOT/$KATA_U/dist/README.md"
+echo                                                    >> "$KATAROOT/$KATA_U/dist/README.md"
+echo "    git clone https://github.com/naldoco/$KATA_L" >> "$KATAROOT/$KATA_U/dist/README.md"
+echo "    cd $KATA_L"                                   >> "$KATAROOT/$KATA_U/dist/README.md"
+echo '    cabal update'                                 >> "$KATAROOT/$KATA_U/dist/README.md"
+echo '    cabal sandbox init'                           >> "$KATAROOT/$KATA_U/dist/README.md"
+echo '    cabal install tasty tasty-hunit'              >> "$KATAROOT/$KATA_U/dist/README.md"
+echo '    cabal configure --enable-tests'               >> "$KATAROOT/$KATA_U/dist/README.md"
+echo '    cabal build && dist/build/test/test'          >> "$KATAROOT/$KATA_U/dist/README.md"
+
 }
 
 check
